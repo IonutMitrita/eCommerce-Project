@@ -13,6 +13,7 @@ export class ProductListComponent implements OnInit {
   currentCategoryId: number = 1;
   previousCategoryId: number = 1;
   searchMode: boolean = false;
+  previousKeyword: string = null;
 
   //pagination properties
   thePageNumber: number = 1;
@@ -49,9 +50,19 @@ export class ProductListComponent implements OnInit {
 
   handleSearchProducts() {
     const theKeyWord: string = this.route.snapshot.paramMap.get('keyword');
-    this.productService.searchProducts(theKeyWord).subscribe((data) => {
-      this.products = data;
-    });
+
+    //if we have a different keyword than previous
+    //then set thePageNumber to 1
+    if (this.previousKeyword != theKeyWord) {
+      this.thePageNumber = 1;
+    }
+
+    this.previousKeyword = theKeyWord;
+    console.log(`keyword=${theKeyWord}, thePageNumber=${this.thePageNumber}`);
+
+    this.productService
+      .searchProducts(theKeyWord, this.thePageNumber - 1, this.thePageSize)
+      .subscribe(this.processResult());
   }
 
   handleListProducts() {
@@ -78,7 +89,7 @@ export class ProductListComponent implements OnInit {
     );
 
     this.productService
-      .getProductListPaginate(
+      .getProductList(
         this.thePageNumber - 1,
         this.thePageSize,
         this.currentCategoryId
@@ -92,8 +103,12 @@ export class ProductListComponent implements OnInit {
     return (data) => {
       this.products = data._embedded.products;
       this.thePageNumber = data.page.number + 1;
+      console.log(`The page size from the response is:${data.page.size}`);
       this.thePageSize = data.page.size;
       this.theTotalElements = data.page.totalElements;
+      console.log('after processing the results we have...');
+      console.log(`thePageNumber:${this.thePageNumber}, thePageSize:${this.thePageSize},
+      theTotalElements:${this.theTotalElements}`);
     };
   }
 }
