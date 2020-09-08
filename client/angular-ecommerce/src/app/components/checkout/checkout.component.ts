@@ -82,15 +82,12 @@ export class CheckoutComponent implements OnInit {
   }
 
   handleMonthsAndYears() {
-    console.log('In handleMonthsAndYears..');
     const creditCardFormGroup = this.checkoutformGroup.get('creditCard');
 
     const currentYear: number = new Date().getFullYear();
     const selectedYear: number = Number(
       creditCardFormGroup.value.expirationYear
     );
-
-    console.log('Selected year is ' + selectedYear);
 
     //if the current year equals the selected year, then start with the current month
     let startMonth: number;
@@ -100,7 +97,6 @@ export class CheckoutComponent implements OnInit {
     } else {
       startMonth = 1;
     }
-    console.log('Start month is ' + startMonth);
 
     this.checkoutFormService
       .getCreditCardMonths(startMonth)
