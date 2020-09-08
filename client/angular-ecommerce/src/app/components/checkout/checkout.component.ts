@@ -51,9 +51,16 @@ export class CheckoutComponent implements OnInit {
     });
 
     //populate credit card months and years
-    this.checkoutFormService.getCreditCardMonths().subscribe((data) => {
-      this.creditCardMonths = data;
-    });
+    const startMonth: number = new Date().getMonth() + 1;
+    console.log('startMonth: ' + startMonth);
+
+    this.checkoutFormService
+      .getCreditCardMonths(startMonth)
+      .subscribe((data) => {
+        console.log('Retrieved credit card months: ' + JSON.stringify(data));
+        this.creditCardMonths = data;
+      });
+
     this.checkoutFormService.getCreditCardYears().subscribe((data) => {
       this.creditCardYears = data;
     });
@@ -72,5 +79,34 @@ export class CheckoutComponent implements OnInit {
     } else {
       this.checkoutformGroup.controls.billingAddress.reset();
     }
+  }
+
+  handleMonthsAndYears() {
+    console.log('In handleMonthsAndYears..');
+    const creditCardFormGroup = this.checkoutformGroup.get('creditCard');
+
+    const currentYear: number = new Date().getFullYear();
+    const selectedYear: number = Number(
+      creditCardFormGroup.value.expirationYear
+    );
+
+    console.log('Selected year is ' + selectedYear);
+
+    //if the current year equals the selected year, then start with the current month
+    let startMonth: number;
+
+    if (currentYear === selectedYear) {
+      startMonth = new Date().getMonth() + 1;
+    } else {
+      startMonth = 1;
+    }
+    console.log('Start month is ' + startMonth);
+
+    this.checkoutFormService
+      .getCreditCardMonths(startMonth)
+      .subscribe((data) => {
+        console.log('Retrieved credit card months: ' + JSON.stringify(data));
+        this.creditCardMonths = data;
+      });
   }
 }
