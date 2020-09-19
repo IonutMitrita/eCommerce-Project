@@ -95,6 +95,11 @@ export class CheckoutComponent implements OnInit {
 
   onSubmit() {
     console.log('handling the submit button');
+
+    if (this.checkoutformGroup.invalid) {
+      this.checkoutformGroup.markAllAsTouched();
+    }
+
     console.log(this.checkoutformGroup.get('customer').value);
     console.log(
       'The email address is ' +
@@ -108,6 +113,18 @@ export class CheckoutComponent implements OnInit {
       'The shipping address state is ' +
         this.checkoutformGroup.get('shippingAddress').value.country.name
     );
+  }
+
+  get firstName() {
+    return this.checkoutformGroup.get('customer.firstName');
+  }
+
+  get lastName() {
+    return this.checkoutformGroup.get('customer.lastName');
+  }
+
+  get email() {
+    return this.checkoutformGroup.get('customer.email');
   }
 
   copyShippingAddressToBillingAddress(event) {
