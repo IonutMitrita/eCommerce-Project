@@ -1,0 +1,22 @@
+version: '3'
+services:
+  ecommerce-backend-spring:
+    image: ecommerce-backend
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    depends_on:
+      - docker-mysql
+  docker-mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    ports:
+      - 3307:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
